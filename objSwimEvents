@@ -1,0 +1,30 @@
+var objSwimEvents = function() {
+
+  var self = this;
+  var swimEvents = {};           // Stores a kay value pair by code to enable easy access of a single event
+  self.arrayOfSwimEvents = []     // Stores an array of swimevents for easier iteration  
+  
+  
+  self.addSwimEvent = function (event){
+    swimEvents[event.swimCode] = event;
+    self.arrayOfSwimEvents.push(event);
+  };
+  
+  
+  self.getSwimEvent = function (swimCode){
+    return swimEvents[swimCode];
+  };
+  
+  
+  self.arrayOfEventsSwumToday = function(){
+    var events = [];
+    self.arrayOfSwimEvents.map(function(value){
+      if(value.swimmingToday){
+        events.push(value);
+      };
+    });
+    return events;  
+  };
+  
+  
+};
