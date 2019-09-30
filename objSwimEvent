@@ -1,0 +1,10 @@
+var objSwimEvent = function(swimCode) {
+
+  var self = this;
+  
+  self.mastersSwimSeperately;
+  self.swimmingToday;
+  
+  self.swimCode = swimCode;
+
+};
