@@ -1,0 +1,113 @@
+var objHeats = function(){
+
+  //-------------------------------------------------------------------------------------------------------------
+  //  Sundry class properties / variables
+  //-------------------------------------------------------------------------------------------------------------
+
+  var self = this;
+  self.heatArray = []   //Array of obHeat 
+  self.swimmers     //Swimmers object containing all swimmers and details of swim registrations (irrespective if swimming today)
+  self.swimEvents   //All swim events (irrespective if swimming today)
+  self.numberOfHeats;
+  
+
+
+
+  //-------------------------------------------------------------------------------------------------------------
+  //   Checks whether masters swim seperately and make appropriate function call to create heats 
+  //-------------------------------------------------------------------------------------------------------------
+  
+  self.organiseSwimmersIntoHeats = function(){
+    
+    self.numberOfHeats =1;
+    
+    //Depending on whether masters swim event seperately create either Junior + Masters heats
+    //or alternatively create a mixed heat
+    self.swimEvents.arrayOfSwimEvents.map(function(value){
+      if (value.swimmingToday === true){
+        if (value.mastersSwimSeperately) {
+          createHeats(value.swimCode, 'Juniors')
+          createHeats(value.swimCode, 'Masters')
+        } else {
+          createHeats(value.swimCode, 'Mixed')
+        };
+      };
+    });
+  
+    //Decrease heats by one as last run of above overstates
+    self.numberOfHeats--;
+
+
+  };
+
+
+
+  //-------------------------------------------------------------------------------------------------------------
+  //   Creates heats for swimmers swimming swim code in ageGroup (junior, masters or mixed)
+  //-------------------------------------------------------------------------------------------------------------
+
+  function createHeats(swimCode, ageGroup){
+  
+    Logger.log(swimCode + ageGroup);
+  
+    var heatSwimmer;
+    var heat = new objHeat;
+    
+    if (ageGroup === 'Mixed') {
+      var swimmersInCategory = self.swimmers.arrayOfSwimmwersByBaseTime(swimCode);
+    } else {
+      var swimmersInCategory = self.swimmers.arrayOfSwimmwersByBaseTime(swimCode, ageGroup);
+    }
+    
+    
+    
+    var numberOfSwimmersInCategory = swimmersInCategory.length
+    var numberOfHeats = Math.ceil(numberOfSwimmersInCategory / numberOfPoolLanes());
+    var averageNumberOfSwimmersPerHeat = numberOfSwimmersInCategory / numberOfHeats
+    var laneNumber = 1;
+    
+    
+    heat.heatNumber = self.numberOfHeats;
+    heat.swimCode = swimCode;
+    heat.ageGroup = ageGroup;
+    
+    
+    while (swimmersInCategory.length > 0) {
+    
+      heatSwimmer = swimmersInCategory.shift();
+      heat.addSwimmer(heatSwimmer)
+      
+      switch(true) {
+      
+        case Math.floor(laneNumber % averageNumberOfSwimmersPerHeat) ===0 && swimmersInCategory.length > 0:
+          //Add current heat to heats array, reset lane to 1 and increment number of heats & create new heat
+          self.heatArray.push(heat);
+          laneNumber =1;
+          self.numberOfHeats++;
+          heat = new objHeat
+          heat.heatNumber = self.numberOfHeats;
+          heat.swimCode = swimCode;
+          heat.ageGroup = ageGroup;
+          break; 
+         
+        case swimmersInCategory.length == 0:    
+          //No more swimmers  - add final heat to array
+          self.heatArray.push(heat);
+          self.numberOfHeats++;
+          break;
+         
+         
+        default:
+          laneNumber++;
+      };
+
+    };
+
+
+
+   
+  };
+
+
+
+};
