@@ -1,0 +1,9 @@
+var objSwim = function() {
+
+  var self = this;
+  self.swimDate = new Date();
+  self.surnameFirstName = '';  // The name of the swimmer
+  self.time = 0;
+  self.swimEvent
+
+};
