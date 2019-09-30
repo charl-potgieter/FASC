@@ -1,0 +1,68 @@
+var objHeat = function(){
+
+  //-------------------------------------------------------------------------------------------------------------
+  //  Sundry class properties / variables
+  //-------------------------------------------------------------------------------------------------------------
+
+  var self = this;
+  self.heatNumber;
+  self.swimCode;        //Event object  
+  self.ageGroup;
+  self.arrayOfSwimmers = [];   //Array of swimmer objects ordered by time (slowest first who swims in lane 1)
+  
+
+
+
+  //-------------------------------------------------------------------------------------------------------------
+  //    Add Swimmer object to heat
+  //-------------------------------------------------------------------------------------------------------------
+  
+  self.addSwimmer = function(swimmer){
+    self.arrayOfSwimmers.push(swimmer);
+  };
+
+
+
+  //-------------------------------------------------------------------------------------------------------------
+  //    Return number of swimmers in heat
+  //-------------------------------------------------------------------------------------------------------------
+
+  self.numberOfSwimmers = function(){
+    return self.arrayOfSwimmers.length;
+  };
+
+
+  //-------------------------------------------------------------------------------------------------------------
+  //    Returns slowest time in heat excluding Time Trialers
+  //    If there are only time trialers in heat zero is returned
+  //-------------------------------------------------------------------------------------------------------------
+
+  self.slowestHeatTime = function(){
+    
+    var baseTimesForHeat = self.arrayOfSwimmers.map(function(value){
+      return value.baseTimes[self.swimCode];
+    });
+    
+    
+    
+    //Remove Time Trials
+    baseTimesForHeat = baseTimesForHeat.filter(function(value){
+      return (value!=='TT');
+    });
+    
+    if (baseTimesForHeat.length === 0) {
+      var maxValue = 0;
+    } else {
+      var maxValue = baseTimesForHeat.reduce(function(a,b){
+        return Math.max(a,b);
+      });
+    };
+    
+    return maxValue;
+    
+    
+  
+  };
+
+
+};
